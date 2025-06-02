@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新世纪福音战士剧场版专题</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-eva-color: #6a0dad; /* EVA 紫色主题色 */
+            --secondary-eva-color: #ff5722; /* EVA 橙色辅助色 */
+            --text-light: #f8f9fa;
+            --text-dark: #212529;
+            --card-bg: rgba(255, 255, 255, 0.85); /* 卡片背景，稍微不透明一点 */
+            --blur-intensity: 5px; /* 毛玻璃效果强度 */
+            --navbar-height: 60px; /* 导航栏高度，用于body的padding-top */
+            --music-player-height: 70px; /* 音乐播放器高度，用于body的padding-top */
+        }
+
+        body {
+            /* 使用伪元素 ::before 来放置背景图片并设置透明度 */
+            position: relative; /* 使得伪元素可以相对于body定位 */
+            background-color: #e9ecef; /* 一个基础的浅色背景，以防图片加载问题或透明度高时 */
+            color: var(--text-dark); /* 默认文字颜色改为深色，因为背景变浅了 */
+            /* padding-top: 算出来的值;  稍后在JS中或者直接硬编码一个大概值 */
+            padding-top: calc(var(--music-player-height) + var(--navbar-height) + 20px); /* 预留空间，20px是额外间距 */
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.1rem; /* Increase base font size */
+        }
+
+        body::before {
+            content: "";
+            position: fixed; /* 背景图片固定，不随滚动条滚动 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('guang.jpg') no-repeat center center;
+            background-size: cover;
+            opacity: 0.3; /* 调整背景图片的透明度 */
+            z-index: -1; /* 确保背景在最底层 */
+        }
+
+
+        /* 音乐播放器样式 (尽量保持你原来的，稍作调整) */
+        .music-player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* 你原来的背景色 */
+            backdrop-filter: blur(var(--blur-intensity));
+            -webkit-backdrop-filter: blur(var(--blur-intensity));
+            z-index: 1055; /* 比Bootstrap的fixed navbar (1030) 和 modal (1050) 都要高 */
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            height: var(--music-player-height); /* 定义一个高度 */
+        }
+
+        .music-player {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .music-player .cover { /* 你的原cover样式 */
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .music-player .control { /* 你的原control样式 */
+            flex-grow: 1;
+            max-width: 300px; /* 你原来的max-width */
+            height: 40px;
+            /* 对于原生audio控件，背景色和圆角等直接应用效果有限 */
+            /* 如果希望完全自定义，通常需要JS模拟播放器UI */
+        }
+
+
+        /* 导航栏美化 */
+        .navbar {
+            position: fixed; /* 导航栏也固定 */
+            top: var(--music-player-height); /* 定位在音乐播放器下方 */
+            left: 0;
+            right: 0;
+            background-color: rgba(52, 58, 64, 0.85) !important; /* Bootstrap .bg-dark 的半透明版本 */
+            backdrop-filter: blur(var(--blur-intensity));
+            -webkit-backdrop-filter: blur(var(--blur-intensity));
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1030; /* Bootstrap 导航栏默认 z-index */
+            height: var(--navbar-height);
+        }
+
+        .navbar .navbar-brand .eva-logo {
+            width: 130px; /* 调整logo大小 */
+            height: auto;
+            object-fit: contain;
+        }
+
+        .navbar .nav-link {
+            color: var(--text-light) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .navbar .nav-link:hover,
+        .navbar .nav-link.active {
+            background-color: var(--primary-eva-color);
+            color: var(--text-light) !important;
+        }
+
+
+        /* 轮播图容器与样式 */
+        .carousel-container {
+            margin: 30px auto;
+            max-width: 900px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 5px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Ensure transition is present */
+        }
+
+        .carousel-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2), 0 8px 12px rgba(0,0,0,0.15); /* Added hover effect */
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 900px; /* 调整高度 - Increase carousel image height */
+            object-fit: cover;
+        }
+        .carousel-indicators [data-bs-target] {
+            background-color: rgba(0,0,0,0.3); /* 指示器颜色 */
+        }
+        .carousel-indicators .active {
+            background-color: var(--primary-eva-color);
+        }
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: rgba(0,0,0,0.4);
+            border-radius: 50%;
+            padding: 12px;
+        }
+
+
+        /* 电影卡片样式优化 */
+        .movie-card {
+            min-height: 600px; /* Adjust min-height to accommodate larger image and content */
+            background-color: var(--card-bg);
+            border: 1px solid rgba(0, 0, 0, 0.1); /* 边框调浅 */
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* 阴影调浅 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: var(--text-dark);
+            overflow: hidden; /* Important for containing the sliding body */
+            position: relative; /* For absolute positioning of card-body */
+        }
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .movie-card .card-img-top {
+            object-position: center 65%;
+            border-top-left-radius: 9px;
+            border-top-right-radius: 9px;
+            height: 480px; /* Increase movie card image height */
+            object-fit: cover;
+            transition: transform 0.4s ease-out; /* Image itself can also transition */
+        }
+
+        .movie-card .card-body {
+            position: absolute; 
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background-color: var(--card-bg); 
+            padding: 1.25rem; 
+            transform: translateY(calc(100% - 58px)); /* Show approx title height (h5 + some padding/margin) */
+            transition: transform 0.4s 0.05s ease-out; /* Slight delay for text */
+            max-height: 80%; 
+            overflow-y: auto; 
+            border-top: 1px solid rgba(0,0,0,0.1); /* Separator line */
+        }
+
+        .movie-card:hover .card-img-top {
+             transform: translateY(-40px); /* Move image up slightly */
+        }
+
+        .movie-card:hover .card-body {
+            transform: translateY(0); 
+        }
+
+        .movie-card .card-title {
+            color: var(--text-dark); /* Changed from --primary-eva-color to --text-dark for black text */
+            font-weight: bold;
+            margin-bottom: 0.75rem; /* Adjusted for tighter space */
+        }
+
+
+        /* 简介部分特定卡片 */
+        #introduction .custom-card {
+            width: 90vw; 
+            max-width: 1100px; 
+            min-height: auto; 
+            margin: 0 auto; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease;
+            background-color: rgba(255, 192, 203, 0.6); /* Pink with opacity */
+            backdrop-filter: blur(var(--blur-intensity)); 
+            -webkit-backdrop-filter: blur(var(--blur-intensity)); 
+        }
+
+        #introduction .custom-card:hover {
+            background-color: rgba(255, 224, 230, 0.9); /* Lighter, more opaque pink on hover */
+        }
+
+        #introduction .custom-card-body {
+            padding: 1.25rem; /* Restore padding */
+            text-align: left; /* Change default text-align for this section */
+            width: 100%; /* Ensure card body takes full width for internal row */
+            position: relative; /* Override position: absolute from .movie-card .card-body */
+            transform: none;    /* Override transform from .movie-card .card-body */
+            background-color: transparent !important; /* Ensure it doesn't get .movie-card .card-body's bg */
+            border-top: none !important; /* Ensure it doesn't get .movie-card .card-body's border */
+            max-height: none; /* Override max-height from .movie-card .card-body if it was inherited */
+            overflow-y: visible; /* Override overflow-y from .movie-card .card-body if it was inherited */
+        }
+
+        #introduction .custom-card img.record-gif {
+            /* width: 300px; height: 450px; original fixed sizes */
+            max-width: 100%;
+            max-height: 480px; /* Adjusted max-height for larger card */
+            object-fit: contain;
+            display: block; /* Needed for mx-auto to work if used */
+            margin: 0 auto 1rem auto; /* Center in column and add some bottom margin */
+        }
+
+        #introduction .custom-card ul {
+            padding-left: 0; /* Kept from original */
+            list-style: none; /* Kept from original */
+            margin-bottom: 0; /* Remove default ul margin */
+        }
+
+        #introduction .custom-card li {
+            margin-bottom: 0.7rem;
+            font-size: 1.1rem; /* Slightly smaller than before due to overall page font increase */
+            color: #495057;
+        }
+        #introduction .custom-card li .fw-bold {
+            color: var(--primary-eva-color);
+        }
+
+        /* Styles for slide-in interaction */
+        #introduction .custom-card .gif-column {
+            opacity: 1; 
+            transform: translateX(0%); /* Ensures GIF column is in its default left position */
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+
+        #introduction .custom-card .intro-text-content {
+            opacity: 0;
+            transform: translateX(30px); /* Start slightly off-screen to its right */
+            transition: transform 0.5s 0.1s ease-out, opacity 0.5s 0.1s ease-out; /* Text slightly delayed */
+        }
+
+        #introduction .custom-card:hover .gif-column {
+            transform: translateX(0%); /* Stays in its natural Bootstrap position on the left */
+        }
+
+        #introduction .custom-card:hover .intro-text-content {
+            opacity: 1;
+            transform: translateX(0%); /* Slides into its natural Bootstrap position */
+        }
+
+        .card-link-wrapper {
+            text-decoration: none;
+            color: inherit;
+            display: block; /* Make the anchor fill the column for layout purposes */
+            height: 100%; /* Ensure the link wrapper takes full height of the column if card is h-100 */
+        }
+        .card-link-wrapper:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+        /* Ensure the card itself still gets the direct hover styles if wrapped by a link */
+        .card-link-wrapper .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+
+        /* 通用标题样式 */
+        h2 {
+            color: var(--text-dark); /* 标题用深色，因为背景变浅了 */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1); /* 浅色背景下的细微阴影 */
+            margin-bottom: 1.8rem !important;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        #introduction {
+            /* background-color: rgba(173, 216, 230, 0.6); */ /* REMOVED from here */
+            /* backdrop-filter: blur(var(--blur-intensity)); */ /* REMOVED from here */
+            /* -webkit-backdrop-filter: blur(var(--blur-intensity)); */ /* REMOVED from here */
+            /* min-height, display, align-items, justify-content are in inline style */
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- 固定在顶部的音乐播放器 -->
+    <div class="music-player-container">
+        <div class="music-player">
+            <img src="zhensi2.jpg" class="cover" alt="音乐封面">
+            <audio class="control" controls>
+                <source src="one last kiss.mp3" type="audio/mpeg">
+                您的浏览器不支持 audio 元素。
+            </audio>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark"> <!-- 移除 fixed-top，因为CSS中已处理 -->
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavEva" aria-controls="navbarNavEva" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavEva">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#introduction">简介</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#movies">剧场版</a></li>
+                    <li class="nav-item"><a class="nav-link" href="audio.html">音乐盒</a></li>
+                    <li class="nav-item"><a class="nav-link" href="works_appreciation.html">作品欣赏</a></li>
+                    <li class="nav-item"><a class="nav-link" href="person.html">人物介绍</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面主要内容 -->
+    <main>
+        <!-- 轮播图 -->
+        <div class="container mt-4"> <!-- 给轮播图一点顶部边距 -->
+            <div class="carousel-container">
+                <div id="movieCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#movieCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#movieCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#movieCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                        <button type="button" data-bs-target="#movieCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="序.jpg" class="d-block w-100" alt="EVA 序">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="Q.jpg" class="d-block w-100" alt="EVA Q">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="破.jpg" class="d-block w-100" alt="EVA 破">
+                        </div>
+                         <div class="carousel-item">
+                            <img src="终.jpg" class="d-block w-100" alt="EVA 终">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#movieCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#movieCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 电影简介 -->
+        <section id="introduction" class="container-fluid py-5 d-flex align-items-center justify-content-center" style="min-height: 100vh; padding-top: calc(var(--music-player-height) + var(--navbar-height) + 40px) !important; padding-bottom: 3rem !important;"> 
+            <!-- Removed container class, using container-fluid for full width section control -->
+            <!-- Added d-flex, align-items-center, justify-content-center and min-height: 100vh -->
+            <!-- Adjusted padding for full height section to respect fixed navbar/player, increased top padding slightly for aesthetics -->
+            <div> <!-- Wrapper div for the heading and card to be centered together -->
+                <h2 class="mb-4 text-center">新世纪福音战士剧场版系列</h2>
+                <div class="card movie-card custom-card">
+                    <div class="card-body custom-card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-5 gif-column text-center"> <!-- GIF column -->
+                                <img src="record.gif" class="record-gif" alt="record">
+                            </div>
+                            <div class="col-md-7 intro-text-content"> <!-- Text content column -->
+                                <p class="card-text mb-3">原作TV动画《新世纪福音战士》进行的全新演绎和重构。该系列共包含四部作品，不仅仅是对原有故事线的简单复刻，而是在保留核心角色与世界观的基础上，对剧情进行了大幅度的调整、扩展与深化，加入了新的角色、机体以及情节发展，并以更为精良的现代动画制作技术，呈现出震撼的视觉效果和更为深刻的主题探讨，目标是导向一个与TV版和旧剧场版都不同的全新结局，大意是人与人之间看上去有很大差异，但是无法回避的事实是，人与人的心灵存在"障壁"，无法进行心灵的交互。同时他们自身害怕孤独，因此选择去扮演其他人喜欢/不讨厌/崇拜的自己(不管这个自己是不是真的会让他人喜欢)。人追求安全和快感，他们畏惧那个没有被展现出来的渺小，阴暗的自己，害怕真正的自我展现在被他人世界观所塑造的世界上，所以他们会选择逃避这个自我。人类补完计划，本意是通过将人的心灵互相交叠，合而为一，这样人们的心就不会产生"他人眼中的自我"，从而消除对真实自己的恐惧，填补心灵的缺憾。真嗣的结局最后表示心灵的缺憾并不是不能被填补的。当人选择连阴暗一并接受的时候，心灵就完成了"补全"。
+                                   
+                                </p>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="fw-bold">《序》</span>（2007）</li>
+                                    <li class="mb-2"><span class="fw-bold">《破》</span>（2009）</li>
+                                    <li class="mb-2"><span class="fw-bold">《Q》</span>（2012）</li>
+                                    <li><span class="fw-bold">《终》</span>（2021）</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 剧场版列表 -->
+        <section id="movies" class="container py-4">
+            <h2 class="mb-4">完整剧场版列表 <small class="text-muted fs-5 fw-normal">(点击卡片可跳转对应视频)</small></h2>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <a href="剧场版视频和封面/序.mp4" class="card-link-wrapper">
+                        <div class="card movie-card h-100">
+                            <img src="序1.jpg" class="card-img-top" alt="EVA 序">
+                            <div class="card-body">
+                                <h5 class="card-title">序</h5>
+                                <p class="card-text">上映时间：2007年</p>
+                                <p>导演：庵野秀明</p>
+                                <p>剧情亮点：作为新剧场版的开篇，以惊艳的作画重构了TV版初期剧情，碇真嗣被迫驾驶EVA初号机对抗使徒，展现了少年在末世压力下的迷茫与抗争。不仅是视觉的革新，更在细节处埋下新系列伏笔，预示着与原作截然不同的命运走向，重新点燃了EVA的核心母题：孤独、沟通与存在的意义。</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="剧场版视频和封面/破.mp4" class="card-link-wrapper">
+                        <div class="card movie-card h-100">
+                            <img src="破2.jpg" class="card-img-top" alt="EVA 破">
+                            <div class="card-body">
+                                <h5 class="card-title">破</h5>
+                                <p class="card-text">上映时间：2009年</p>
+                                <p>导演：庵野秀明</p>
+                                <p>剧情亮点：剧情发展大幅偏离TV版轨迹，引入了充满活力的驾驶员真希波·玛丽·伊兰崔亚斯，并赋予明日香更为独立的性格塑造。战斗场面空前激烈，EVA兽化二号机等新设定带来视觉冲击。影片在角色间情感羁绊的描绘上更为积极，却在结尾以"近第三次冲击"的灾难性事件将故事推向未知深渊，展现了希望与绝望的剧烈碰撞。</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="剧场版视频和封面/Q.mp4" class="card-link-wrapper">
+                        <div class="card movie-card h-100">
+                            <img src="Q3.jpg" class="card-img-top" alt="EVA Q">
+                            <div class="card-body">
+                                <h5 class="card-title">Q</h5>
+                                <p class="card-text">上映时间：2012年</p>
+                                <p>导演：庵野秀明</p>
+                                <p>剧情亮点：时间线跳跃至《破》的十四年后，世界已化为一片废墟，碇真嗣苏醒后发现一切物是人非，昔日伙伴视其为罪魁祸首。影片基调极为沉郁，充满了谜团、误解与无法弥补的隔阂。真嗣在对自身行为后果的绝望与对现实的无法理解中挣扎，与新角色渚薰的相遇成为其唯一慰藉，深刻探讨了救赎、责任以及"重来"的不可能性。</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="剧场版视频和封面/终.mp4" class="card-link-wrapper">
+                        <div class="card movie-card h-100">
+                            <img src="Q2.jpg" class="card-img-top" alt="EVA 终">
+                            <div class="card-body">
+                                <h5 class="card-title">终</h5>
+                                <p class="card-text">上映时间：2021年</p>
+                                <p>导演：庵野秀明</p>
+                                <p>剧情亮点：为新剧场版系列画上句号，解答了诸多谜团，并以独特的视角探讨了生命的意义与和解。其ED音乐有股甜蜜死亡的味道，但说替换One Last Kiss还差点，One Last Kiss给人一股全新的、不带任何回忆的、展望未来的使命感。</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 引入Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

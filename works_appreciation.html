@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品欣赏 - 新世纪福音战士</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-eva-color: #6a0dad; /* EVA 紫色主题色 */
+            --secondary-eva-color: #ff5722; /* EVA 橙色辅助色 */
+            --text-light: #f8f9fa;
+            --text-dark: #212529;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --blur-intensity: 5px;
+            --navbar-height: 60px; 
+            --music-player-height: 70px;
+        }
+
+        body {
+            position: relative;
+            background-color: #e9ecef;
+            color: var(--text-dark);
+            padding-top: calc(var(--music-player-height) + var(--navbar-height) + 20px);
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.1rem; /* Consistent with main page */
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('guang.jpg') no-repeat center center;
+            background-size: cover;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        /* Music Player (copied from main page for consistency if needed, or can be omitted if not on this page) */
+        .music-player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(var(--blur-intensity));
+            -webkit-backdrop-filter: blur(var(--blur-intensity));
+            z-index: 1055;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            height: var(--music-player-height);
+        }
+
+        .music-player {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .music-player .cover {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .music-player .control {
+            flex-grow: 1;
+            max-width: 300px;
+            height: 40px;
+        }
+
+        /* Navbar (copied for consistency) */
+        .navbar {
+            position: fixed;
+            top: var(--music-player-height);
+            left: 0;
+            right: 0;
+            background-color: rgba(52, 58, 64, 0.85) !important;
+            backdrop-filter: blur(var(--blur-intensity));
+            -webkit-backdrop-filter: blur(var(--blur-intensity));
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 1030;
+            height: var(--navbar-height);
+        }
+
+        .navbar .nav-link {
+            color: var(--text-light) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .navbar .nav-link:hover,
+        .navbar .nav-link.active { /* Make "作品欣赏" active here */
+            background-color: var(--primary-eva-color);
+            color: var(--text-light) !important;
+        }
+
+        h2 {
+            color: var(--text-dark);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 1.8rem !important;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .video-container {
+            margin-bottom: 30px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .video-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .video-container h3 {
+            color: var(--primary-eva-color);
+            margin-bottom: 15px;
+        }
+
+        .video-container p {
+            font-size: 0.95rem; /* Slightly smaller font for description */
+            color: #495057; /* Darker gray for better readability than text-muted */
+            margin-bottom: 1rem; /* Space before video player */
+            line-height: 1.6;
+        }
+
+        video {
+            width: 100%;
+            max-width: 800px; /* Control max video width */
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Fixed Music Player -->
+    <div class="music-player-container">
+        <div class="music-player">
+            <img src="zhensi2.jpg" class="cover" alt="音乐封面">
+            <audio class="control" controls>
+                <source src="one last kiss.mp3" type="audio/mpeg">
+                您的浏览器不支持 audio 元素。
+            </audio>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavEva" aria-controls="navbarNavEva" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavEva">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="newmain.html#introduction">简介</a></li>
+                    <li class="nav-item"><a class="nav-link" href="newmain.html#movies">剧场版</a></li>
+                    <li class="nav-item"><a class="nav-link" href="audio.html">音乐盒</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="works_appreciation.html">作品欣赏</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="container py-5">
+        <h2>作品欣赏</h2>
+        <div class="row"> <!-- Added row for grid layout -->
+            <div class="col-lg-4 col-md-6 mb-4"> <!-- Grid column for first video -->
+                <div class="video-container h-100"> <!-- h-100 to make cards in a row same height if needed -->
+                    <h3>《One Last Kiss》</h3>
+                    <p>
+                        宇多田光为《新世纪福音战士新剧场版：终》献唱的主题曲，深情动人，为系列画上完美句点。
+                    </p>
+                    <video controls poster="明媚.jpg">
+                        <source src="one last kiss.mp4" type="video/mp4">
+                        您的浏览器不支持 video 标签。
+                    </video>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4"> <!-- Grid column for second video -->
+                <div class="video-container h-100">
+                    <h3>《精卫》</h3>
+                    <p>
+                        一部以《新世纪福音战士》为素材，搭配《精卫》同名歌曲的粉丝创作视频作品，展现了独特的剪辑与情感表达。
+                    </p>
+                    <video controls poster="mudi.jpg"> <!-- You might want specific posters for each video -->
+                        <source src="精卫.mp4" type="video/mp4">
+                        您的浏览器不支持 video 标签。
+                    </video>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4"> <!-- Grid column for third video -->
+                <div class="video-container h-100">
+                    <h3>《现实》</h3>
+                    <p>
+                        《新世纪福音战士》的粉丝剪辑视频，配以《现实》作为背景音乐，通过精心挑选的画面片段，传递着对作品主题的理解与共鸣。
+                    </p>
+                    <video controls poster="现实.jpg"> <!-- You might want specific posters for each video -->
+                        <source src="现实.mp4" type="video/mp4">
+                        您的浏览器不支持 video 标签。
+                    </video>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

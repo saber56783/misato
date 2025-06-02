@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人物介绍 - 新世纪福音战士</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-eva-color: #6a0dad; /* EVA 紫色主题色 */
+            --secondary-eva-color: #ff5722; /* EVA 橙色辅助色 */
+            --text-light: #f8f9fa;
+            --text-dark: #212529;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --blur-intensity: 5px;
+            --navbar-height: 60px; 
+            --music-player-height: 70px;
+        }
+
+        body {
+            position: relative;
+            background-color: #e9ecef;
+            color: var(--text-dark);
+            padding-top: calc(var(--music-player-height) + var(--navbar-height) + 20px);
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.1rem;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('guang.jpg') no-repeat center center;
+            background-size: cover;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .music-player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(var(--blur-intensity));
+            -webkit-backdrop-filter: blur(var(--blur-intensity));
+            z-index: 1055;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            height: var(--music-player-height);
+        }
+
+        .music-player {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .music-player .cover {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .music-player .control {
+            flex-grow: 1;
+            max-width: 300px;
+            height: 40px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: var(--music-player-height);
+            left: 0;
+            right: 0;
+            background-color: rgba(52, 58, 64, 0.85) !important;
+            backdrop-filter: blur(var(--blur-intensity));
+            -webkit-backdrop-filter: blur(var(--blur-intensity));
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 1030;
+            height: var(--navbar-height);
+        }
+
+        .navbar .nav-link {
+            color: var(--text-light) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .navbar .nav-link:hover,
+        .navbar .nav-link.active {
+            background-color: var(--primary-eva-color);
+            color: var(--text-light) !important;
+        }
+
+        h2.page-title {
+            color: var(--text-dark);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 2.5rem !important; /* More space for main title */
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .character-card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(0,0,0,0.125);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%; /* Make cards in a row same height */
+        }
+
+        .character-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .character-card .card-img-top {
+            width: 100%;
+            height: 300px; /* Fixed height for character images */
+            object-fit: cover; /* Crop image to fit */
+            object-position: center top; /* Focus on the top part of the image */
+            border-top-left-radius: 9px;
+            border-top-right-radius: 9px;
+        }
+
+        .character-card .card-body {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .character-card .card-title {
+            color: var(--primary-eva-color);
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .character-card .card-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #343a40; /* Slightly darker than default for better readability */
+            flex-grow: 1; /* Allows text to take available space, useful for card height consistency */
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Fixed Music Player -->
+    <div class="music-player-container">
+        <div class="music-player">
+            <img src="zhensi2.jpg" class="cover" alt="音乐封面">
+            <audio class="control" controls>
+                <source src="one last kiss.mp3" type="audio/mpeg">
+                您的浏览器不支持 audio 元素。
+            </audio>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavEva" aria-controls="navbarNavEva" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavEva">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="newmain.html#introduction">简介</a></li>
+                    <li class="nav-item"><a class="nav-link" href="newmain.html#movies">剧场版</a></li>
+                    <li class="nav-item"><a class="nav-link" href="audio.html">音乐盒</a></li>
+                    <li class="nav-item"><a class="nav-link" href="works_appreciation.html">作品欣赏</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="person.html">人物介绍</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="container py-5">
+        <h2 class="page-title">主要人物介绍</h2>
+        
+        <div class="row">
+            <!-- Character 1: Shinji Ikari -->
+            <div class="col-lg-4 col-md-6 mb-4 d-flex">
+                <div class="card character-card">
+                    <img src="shinji.jpg" class="card-img-top" alt="碇真嗣">
+                    <div class="card-body">
+                        <h5 class="card-title">碇真嗣 (Shinji Ikari)</h5>
+                        <p class="card-text">本作主人公，EVA初号机驾驶员。性格内向、怯懦，不擅与人交流，但在关键时刻能展现出非凡的勇气与决心。他的成长与挣扎是故事的核心线索之一，探讨了责任、孤独与人际关系的主题。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Character 2: Rei Ayanami -->
+            <div class="col-lg-4 col-md-6 mb-4 d-flex">
+                <div class="card character-card">
+                    <img src="rei.jpg" class="card-img-top" alt="绫波零">
+                    <div class="card-body">
+                        <h5 class="card-title">绫波零 (Rei Ayanami)</h5>
+                        <p class="card-text">EVA零号机驾驶员，是一个充满谜团的少女。她拥有异于常人的冷静与沉默，对自身的存在抱有疑问。随着故事发展，她逐渐展现出人性的光辉，是探讨"灵魂"与"羁绊"的重要角色。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Character 3: Asuka Langley Soryu/Shikinami -->
+            <div class="col-lg-4 col-md-6 mb-4 d-flex">
+                <div class="card character-card">
+                    <img src="asuka.jpg" class="card-img-top" alt="式波·明日香·兰格雷">
+                    <div class="card-body">
+                        <h5 class="card-title">式波·明日香·兰格雷 (Asuka Shikinami Langley)</h5>
+                        <p class="card-text">EVA二号机驾驶员，德日混血的天才少女。性格外向、好胜、自尊心极强，渴望得到他人的认可。她的骄傲外表下隐藏着脆弱与孤独，人物弧光充满了张力与复杂性。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Character 4: Kaworu Nagisa -->
+            <div class="col-lg-4 col-md-6 mb-4 d-flex">
+                <div class="card character-card">
+                    <img src="kaworu.jpg" class="card-img-top" alt="渚薰">
+                    <div class="card-body">
+                        <h5 class="card-title">渚薰 (Kaworu Nagisa)</h5>
+                        <p class="card-text">身份神秘的少年，同时也是最后的使徒。他对真嗣表现出超越常人的理解与关怀，引导真嗣思考生命的意义。其存在本身充满了哲学思辨色彩，是故事后期关键的转折点。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Character 5: Misato Katsuragi -->
+            <div class="col-lg-4 col-md-6 mb-4 d-flex">
+                <div class="card character-card">
+                    <img src="misato.png" class="card-img-top" alt="葛城美里">
+                    <div class="card-body">
+                        <h5 class="card-title">葛城美里 (Misato Katsuragi)</h5>
+                        <p class="card-text">NERV本部作战部长，EVA驾驶员们的直属上司和监护人。工作上雷厉风行，私下却有不为人知的脆弱一面。她是连接少年驾驶员与成人世界的桥梁，背负着过去的伤痛与沉重的责任。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Character 6: Mari Illustrious Makinami -->
+            <div class="col-lg-4 col-md-6 mb-4 d-flex">
+                <div class="card character-card">
+                    <img src="mari.jpg" class="card-img-top" alt="真希波·玛丽·伊兰崔亚斯">
+                    <div class="card-body">
+                        <h5 class="card-title">真希波·玛丽·伊兰崔亚斯 (Mari Illustrious Makinami)</h5>
+                        <p class="card-text">新剧场版中登场的新角色，神秘的EVA驾驶员。性格乐天奔放，享受战斗，驾驶EVA时极具野性。她的背景和目的充满谜团，为新剧场版系列注入了新的活力与变数。</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

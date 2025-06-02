@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new 翻转</title>
+    <style>
+        body{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          height: 100vh;
+          background-image: linear-gradient(rgb(237, 232, 232), rgb(194, 49, 95));
+          overflow: hidden;
+        }
+        .shell{
+            position: relative;
+            /* 相对定位 */
+            width: 60vw;
+            /* 宽度占视口宽度的60% */
+            height: 40vw;
+            /* 高度占视口高度的40% */
+            max-width: 380px;
+            /* 最大宽度为380像素 */
+            max-height: 250px;
+            /* 最大高度为250像素 */
+            margin: 0;
+            /* 外边距为0 */
+            color: white;
+            /* 字体颜色为白色 */
+            perspective: 1000px;
+            /* 透视效果，观察者与z=0平面的距离 */
+            transform-origin: center;
+            /* 变形原点为中心 */
+        }
+        .control{
+            position: fixed; 
+    /* 固定定位，实现置顶效果 */ 
+    top: 0; 
+    /* 距离页面顶部为 0 */ 
+    left: 0; 
+    /* 距离页面左侧为 0 */ 
+            width: 60vw;
+            /* 宽度占视口宽度的60% */
+            height: 40vw;
+            /* 高度占视口高度的40% */
+            max-width: 380px;
+            /* 最大宽度为380像素 */
+            max-height: 250px;
+            /* 最大高度为250像素 */
+            margin: 0;
+            /* 外边距为0 */
+            color: white;
+            /* 字体颜色为白色 */
+            perspective: 1000px;
+            /* 透视效果，观察者与z=0平面的距离 */
+            
+        }
+        .content{
+            display: flex;
+            /* 设置为弹性盒子布局 */
+            justify-content: center;
+            /* 主轴居中对齐 */
+            align-items: center;
+            /* 交叉轴居中对齐 */
+            position: absolute;
+            /* 绝对定位 */
+            width: 100%;
+            /* 宽度100% */
+            height: 100%;
+            /* 高度100% */
+            transform-origin: center;
+            /* 变形原点为中心 */
+            transform-style: preserve-3d;
+            /* 保持3D变换 */
+            transform: translateZ(-30vw) rotateY(0);
+            /* 变换：沿z轴平移-30vw，绕y轴旋转0度 */
+            animation: carousel 9s infinite cubic-bezier(0.77, 0, 0.175, 1) forwards;
+            /* 动画：名称为carousel，持续时间9秒，无限循环，缓动函数为cubic-bezier(0.77, 0, 0.175, 1)，动画结束后保持最后状态 */
+
+        }
+        .item {
+            position: absolute;
+            /* 绝对定位 */
+            width: 60vw;
+            /* 宽度占视口宽度的60% */
+            height: 40vw;
+            /* 高度占视口高度的40% */
+            max-width: 380px;
+            /* 最大宽度为380像素 */
+            max-height: 250px;
+            /* 最大高度为250像素 */
+            box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3);
+            /* 设置阴影 */
+            border-radius: 6px;
+            /* 边框圆角半径为6像素 */
+            background-size: cover;
+            /* 背景图片等比例缩放并覆盖整个容器 */
+            -webkit-box-reflect: below 25px -webkit-linear-gradient(transparent 50%, rgba(255, 255, 255, 0.3));
+            /* 创建倒影效果 */
+        }
+        .item:nth-child(1) {
+            background-image: url(asuka2.jpg);
+            /* 背景图片为01.jpg */
+            transform: rotateY(0) translateZ(35vw);
+            /* 变换：绕y轴旋转0度，沿z轴平移35vw */
+        }
+
+        /* 第二个项目样式 */
+        .item:nth-child(2) {
+            background-image: url(zhensi2.jpg);
+            /* 背景图片为02.jpg */
+            transform: rotateY(90deg) translateZ(35vw);
+            /* 变换：绕y轴旋转120度，沿z轴平移35vw */
+        }
+
+        /* 第三个项目样式 */
+        .item:nth-child(3) {
+            background-image: url(fenmao.jpg);
+            /* 背景图片为03.jpg */
+            transform: rotateY(180deg) translateZ(35vw);
+            /* 变换：绕y轴旋转240度，沿z轴平移35vw */
+        }
+        .item:nth-child(4) {
+            background-image: url(moon.png);
+            /* 背景图片为03.jpg */
+            transform: rotateY(270deg) translateZ(35vw);
+            /* 变换：绕y轴旋转240度，沿z轴平移35vw */
+        }
+        @keyframes carousel {
+
+0%,
+17.5% {
+    transform: translateZ(-35vw) rotateY(0);
+    /* 变换：沿z轴平移-35vw，绕y轴旋转0度 */
+}
+
+27.5%,
+45% {
+    transform: translateZ(-35vw) rotateY(-90deg);
+    /* 变换：沿z轴平移-35vw，绕y轴旋转-120度 */
+}
+
+55%,
+72.5% {
+    transform: translateZ(-35vw) rotateY(-180deg);
+    /* 变换：沿z轴平移-35vw，绕y轴旋转-240度 */
+}
+
+82.5%,
+100% {
+    transform: translateZ(-35vw) rotateY(-270deg);
+    /* 变换：沿z轴平移-35vw，绕y轴旋转-360度 */
+}
+}
+    </style>
+
+    </style>
+</head>
+<body>
+    <!-- 音乐播放器 --> 
+          <div class="music-player" style="position: fixed; top: 0; left: 0; background: rgba(255,255,255,0.8); padding: 10px; z-index: 1000;">
+    <img src="asuka2.jpg" class="cover" width="100" alt="音乐封面" style="display: block; margin-bottom: 10px;">
+    <audio class="control" controls>
+        <source src="one last kiss.mp3" type="audio/mpeg">
+        您的浏览器不支持 audio 元素。
+    </audio>
+</div>
+    <div    class="shell">
+        <div class="content">
+            <div class="item"> "ASUKA"</div>
+            <div class="item"> "Ikari Shinji"</div>
+            <div class="item"> "真希波・マリ・イラストリアス"</div>
+            <div class="item"> "LiLIN"</div>
+        </div>
+    </div>
+</body>
+</html>

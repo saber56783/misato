@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new 翻转 with Embedded Lyrics</title>
+    <style>
+        /* ... 你的所有 CSS 样式保持不变 ... */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            background-image: linear-gradient(rgb(237, 232, 232), rgb(194, 49, 95));
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        .shell {
+            position: relative;
+            width: 60vw;
+            height: 40vw;
+            max-width: 380px;
+            max-height: 250px;
+            margin: 20px 0;
+            color: white;
+            perspective: 1000px;
+            transform-origin: center;
+        }
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-origin: center;
+            transform-style: preserve-3d;
+            transform: translateZ(-30vw) rotateY(0);
+            animation: carousel 9s infinite cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+        .item {
+            position: absolute;
+            width: 60vw;
+            height: 40vw;
+            max-width: 380px;
+            max-height: 250px;
+            box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            background-size: cover;
+            background-position: center;
+            -webkit-box-reflect: below 25px -webkit-linear-gradient(transparent 50%, rgba(255, 255, 255, 0.3));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+        }
+        .item:nth-child(1) { background-image: url(asuka2.jpg); transform: rotateY(0) translateZ(35vw); }
+        .item:nth-child(2) { background-image: url(zhensi2.jpg); transform: rotateY(90deg) translateZ(35vw); }
+        .item:nth-child(3) { background-image: url(fenmao.jpg); transform: rotateY(180deg) translateZ(35vw); }
+        .item:nth-child(4) { background-image: url(moon.png); transform: rotateY(270deg) translateZ(35vw); }
+        @keyframes carousel {
+            0%, 17.5% { transform: translateZ(-35vw) rotateY(0); }
+            27.5%, 45% { transform: translateZ(-35vw) rotateY(-90deg); }
+            55%, 72.5% { transform: translateZ(-35vw) rotateY(-180deg); }
+            82.5%, 100% { transform: translateZ(-35vw) rotateY(-270deg); }
+        }
+        .music-player {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .music-player .cover {
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        #lyrics-container {
+            width: 80%;
+            max-width: 600px;
+            height: 150px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 20px;
+            text-align: center;
+            color: #fff;
+            font-size: 1em;
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        #lyrics-container::-webkit-scrollbar { display: none; }
+        #lyrics-container p {
+            margin: 8px 0;
+            padding: 5px;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+        #lyrics-container p.active {
+            color: #ff5795;
+            font-weight: bold;
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        #lyrics-container p.error-message { /* 虽然这里用不到加载错误，但可以保留样式 */
+            color: #ff6b6b;
+            font-weight: bold;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="music-player">
+        <img src="zhensi.jpg" class="cover" alt="音乐封面">
+        <audio id="audioPlayer" class="audio-control" controls>
+            <source src="one last kiss.mp3" type="audio/mpeg">
+            您的浏览器不支持 audio 元素。
+        </audio>
+    </div>
+
+    <div class="shell">
+        <div class="content">
+            <div class="item"> "ASUKA"</div>
+            <div class="item"> "Ikari Shinji"</div>
+            <div class="item"> "真希波・マリ・イラストリアス"</div>
+            <div class="item"> "LiLIN"</div>
+        </div>
+    </div>
+
+    <div id="lyrics-container">
+        <!-- 歌词会由 JS 填充 -->
+    </div>
+
+    <script>
+        const audioPlayer = document.getElementById('audioPlayer');
+        const lyricsContainer = document.getElementById('lyrics-container');
+        let lyrics = [];
+        let currentLineIndex = -1;
+
+        // 关键步骤：将你的 .lrc 文件内容直接粘贴在这里
+        const lrcData = `
+[00:00.00]One Last Kiss - 宇多田ヒカル (宇多田光)
+[00:03.00]词：宇多田ヒカル
+[00:04.00]曲：宇多田ヒカル
+[00:20.00]初めてのルーブルは
+[00:22.00]なんてことは無かったわ
+[00:25.00]私だけのモナ・リザ
+[00:26.00]もうとっくに出会ってたから
+[00:29.00]初めてあなたを見た
+[00:31.00]あの日動き出した歯車
+[00:33.00]止められない喪失の予感
+[00:38.00]もういっぱいあるけれど
+[00:43.00]もう一つ増やしましょう
+[00:48.00]Can you give me one last kiss
+[00:52.00]忘れたくないこと
+[01:01.00]忘れたくないこと
+[01:09.00]I love you more than you'll ever know
+[01:21.00]写真が苦手なんだ
+[01:22.00]でもそんな罠はいらないわ
+[01:24.00]あなたが焼き付いたまま
+[01:26.00]私の心のプロジェクター
+[01:29.00]寂しくないふりしてた
+[01:31.00]まあ そんなのお互い様か
+[01:33.00]誰かを求めることは
+[01:35.00]即ち傷つくことだった
+[01:39.00]Can you give me one last kiss
+[01:43.00]燃えるようなキスをしよう
+[01:47.00]忘れたくても忘れられないほど
+[02:00.00]I love you more than you'll ever know
+[02:09.00]I love you more than you'll ever know
+[02:16.00]I love you more than you'll ever know
+[02:29.00]もう分かっているよ
+[02:35.00]この世の終わりでも
+[02:39.00]歳を取っても
+[02:46.00]忘れられない人
+[02:50.00]忘れられない人
+[02:52.00]忘れられない人
+[02:54.00]忘れられない人
+[02:58.00]忘れられない人
+[03:01.00]I love you more than you'll ever know
+[03:09.00]忘れられない人
+[03:18.00]I love you more than you'll ever know
+[03:26.00]忘れられない人
+[03:33.00]忘れられない人
+[03:35.00]I love you more than you'll ever know
+[03:46.00]吹いていた風の跡を追いかけた
+[03:52.00]眩しい午後
+`; // <--- 粘贴在这里，用反引号 `` 包裹多行字符串
+
+        function parseLRC(lrc) { // 注意，这里的参数名是 lrc，对应下面的 lrcData
+            const lines = lrc.split('\n');
+            const regex = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
+            const parsedLyrics = [];
+            for (const line of lines) {
+                const match = line.match(regex);
+                if (match) {
+                    const minutes = parseInt(match[1], 10);
+                    const seconds = parseInt(match[2], 10);
+                    const milliseconds = parseInt(match[3].padEnd(3, '0'), 10);
+                    const text = match[4].trim();
+                    const time = minutes * 60 + seconds + milliseconds / 1000;
+                    if (text) {
+                        parsedLyrics.push({ time, text });
+                    }
+                }
+            }
+            return parsedLyrics.sort((a, b) => a.time - b.time);
+        }
+
+        function displayLyrics() {
+            lyricsContainer.innerHTML = '';
+            if (lyrics.length === 0 && lrcData.trim() !== "") { // 额外检查 lrcData 是否真的为空
+                 const p = document.createElement('p');
+                 p.textContent = "LRC 歌词格式似乎有问题，无法解析。";
+                 p.classList.add('error-message');
+                 lyricsContainer.appendChild(p);
+                 return;
+            } else if (lyrics.length === 0) {
+                 const p = document.createElement('p');
+                 p.textContent = "没有提供歌词数据。";
+                 lyricsContainer.appendChild(p);
+                 return;
+            }
+            lyrics.forEach((line, index) => {
+                const p = document.createElement('p');
+                p.textContent = line.text;
+                p.dataset.index = index;
+                lyricsContainer.appendChild(p);
+            });
+        }
+
+        function updateLyrics() {
+            if (!lyrics.length) return;
+            const currentTime = audioPlayer.currentTime;
+            let newCurrentLineIndex = -1;
+            for (let i = 0; i < lyrics.length; i++) {
+                if (lyrics[i].time <= currentTime) {
+                    newCurrentLineIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            if (newCurrentLineIndex !== currentLineIndex) {
+                if (currentLineIndex !== -1 && lyricsContainer.children[currentLineIndex]) {
+                    lyricsContainer.children[currentLineIndex].classList.remove('active');
+                }
+                if (newCurrentLineIndex !== -1 && lyricsContainer.children[newCurrentLineIndex]) {
+                    lyricsContainer.children[newCurrentLineIndex].classList.add('active');
+                    const activeLineElement = lyricsContainer.children[newCurrentLineIndex];
+                    const scrollTop = activeLineElement.offsetTop - (lyricsContainer.clientHeight / 2) + (activeLineElement.clientHeight / 2);
+                    lyricsContainer.scrollTop = scrollTop;
+                }
+                currentLineIndex = newCurrentLineIndex;
+            }
+        }
+
+        // 初始化
+        if (lrcData && lrcData.trim() !== "") {
+            lyrics = parseLRC(lrcData); // 直接使用 lrcData
+            displayLyrics();
+
+            // 添加事件监听器
+            audioPlayer.addEventListener('timeupdate', updateLyrics);
+            audioPlayer.addEventListener('seeking', () => {
+                currentLineIndex = -1;
+            });
+            audioPlayer.addEventListener('seeked', updateLyrics);
+            audioPlayer.addEventListener('ended', () => {
+                if (currentLineIndex !== -1 && lyricsContainer.children[currentLineIndex]) {
+                    lyricsContainer.children[currentLineIndex].classList.remove('active');
+                }
+                currentLineIndex = -1;
+            });
+        } else {
+            lyricsContainer.innerHTML = '<p>没有歌词数据。</p>';
+            console.log("lrcData 为空，不进行歌词处理。");
+        }
+
+    </script>
+</body>
+</html>
